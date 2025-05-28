@@ -1,0 +1,32 @@
+name: image
+
+on:
+  workflow_call:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+*'
+
+permissions:
+  contents: read
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.23
+
+      - uses: ko-build/setup-ko@v0.8
+        env:
+          KO_DOCKER_REPO: altinity/node-zone-controller
+      - env:
+          auth_token: ${{ secrets.DOCKER_INFRA_TOKEN }}
+        run: |
+          echo "${auth_token}" | ko login docker.io --username ${{ secrets.DOCKER_INFRA_USER }} --password-stdin
+          VERSION=latest make image-push
+          VERSION=${{ github.ref_name }} make image-push
