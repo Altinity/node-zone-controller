@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-auto-zone
+  namespace: altinity-cloud-system
+  labels:
+    app: node-auto-zone
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-auto-zone
+  template:
+    metadata:
+      labels:
+        app: node-auto-zone
+    spec:
+      serviceAccountName: node-auto-zone
+      containers:
+      - name: controller
+        image: altinity/node-zone-controller:latest
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "64Mi"
+          requests:
+            memory: "64Mi"
+            cpu: "10m"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65532
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
