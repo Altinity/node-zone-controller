@@ -68,8 +68,7 @@ The controller will automatically apply:
 Deploy the controller using the provided manifests (replace latest tag for production and use IfNotPresent pull policy):
 
 ```bash
-kubectl apply -f deploy/rbac.yaml
-VERSION=latest envsubst < deploy/deployment.yaml | kubectl apply -f -
+kubectl apply -f deploy/
 ```
 
 This will create:

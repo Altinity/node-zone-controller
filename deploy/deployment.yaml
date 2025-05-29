@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: node-auto-zone
-  namespace: altinity-cloud-system
+  namespace: kube-system
   labels:
     app: node-auto-zone
 spec:
@@ -18,8 +18,8 @@ spec:
       serviceAccountName: node-auto-zone
       containers:
       - name: controller
-        image: altinity/node-zone-controller:latest
-        imagePullPolicy: Always
+        image: altinity/node-zone-controller:0.0.2
+        imagePullPolicy: IfNotPresent
         resources:
           limits:
             memory: "64Mi"
