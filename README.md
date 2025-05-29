@@ -65,10 +65,10 @@ The controller will automatically apply:
 
 ## Deployment
 
-Deploy the controller using the provided manifests (replace latest tag for production and use IfNotPresent pull policy):
+Deploy the controller using the provided manifests:
 
 ```bash
-kubectl apply -f deploy/
+kubectl apply -f https://raw.githubusercontent.com/Altinity/node-zone-controller/refs/heads/main/deploy/deploy.yaml
 ```
 
 This will create:

@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: node-zone-controller
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: node-zone-controller
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "list", "watch", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: node-zone-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: node-zone-controller
+subjects:
+- kind: ServiceAccount
+  name: node-zone-controller
+  namespace: kube-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-zone-controller
+  namespace: kube-system
+  labels:
+    app: node-zone-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-zone-controller
+  template:
+    metadata:
+      labels:
+        app: node-zone-controller
+    spec:
+      serviceAccountName: node-zone-controller
+      containers:
+      - name: controller
+        image: altinity/node-zone-controller:0.0.2
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            memory: "64Mi"
+          requests:
+            memory: "64Mi"
+            cpu: "10m"
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 65532
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
